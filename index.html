@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AG Social</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #0f172a);
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 3.5em;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #ffffff;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .subtitle {
+            font-size: 1em;
+            opacity: 0.7;
+            margin-top: 8px;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .feature {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.6s ease-out;
+            cursor: pointer;
+        }
+
+        .feature.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .feature p {
+            opacity: 0.85;
+            font-size: 1em;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 40px 15px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #8b5cf6, #4c1d95);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-size: 1.2em;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            background: linear-gradient(135deg, #a78bfa, #8b5cf6);
+        }
+
+        /* Модальное окно для экскурсии */
+        .tour-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .tour-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            max-width: 90%;
+            width: 100%;
+            position: relative;
+            animation: modalFadeIn 0.5s ease-out;
+            color: #e0e0e0;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .tour-header img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+        .tour-text {
+            padding: 20px;
+        }
+
+        .tour-text h2 {
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .tour-text p {
+            margin-bottom: 12px;
+            opacity: 0.9;
+            font-size: 0.95em;
+        }
+
+        /* Полноэкранное окно для "Начать" */
+        .start-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1e3a8a, #4c1d95, #8b5cf6);
+            background-size: 200% 200%;
+            animation: gradientBG 10s ease infinite;
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .start-modal h2 {
+            font-size: 2em;
+            color: #ffffff;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            animation: fadeInText 1.5s ease-out;
+            padding: 20px;
+        }
+
+        /* Модальное окно для политики */
+        .policy-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .policy-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            max-width: 90%;
+            width: 100%;
+            padding: 25px;
+            color: #e0e0e0;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .policy-content h1 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .policy-content h2 {
+            font-size: 1.4em;
+            margin: 15px 0 8px;
+            color: #ffffff;
+        }
+
+        .policy-content p {
+            margin-bottom: 12px;
+            opacity: 0.9;
+            font-size: 0.9em;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            opacity: 0.7;
+            font-size: 0.9em;
+        }
+
+        footer a {
+            color: #a78bfa;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.8em;
+            color: #ffffff;
+            cursor: pointer;
+            transition: color 0.3s;
+            z-index: 10;
+        }
+
+        .close-btn:hover {
+            color: #a78bfa;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(139, 92, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+
+        @keyframes fadeInText {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Медиа-запросы для телефонов */
+        @media (max-width: 768px) {
+            header {
+                padding: 40px 15px;
+            }
+
+            .logo {
+                font-size: 2.5em;
+            }
+
+            .subtitle {
+                font-size: 0.9em;
+            }
+
+            .content {
+                padding: 30px 10px;
+                gap: 20px;
+            }
+
+            .feature {
+                padding: 20px;
+            }
+
+            .feature h2 {
+                font-size: 1.5em;
+            }
+
+            .feature p {
+                font-size: 0.9em;
+            }
+
+            .cta-section {
+                padding: 30px 10px;
+            }
+
+            .cta-button {
+                padding: 12px 30px;
+                font-size: 1em;
+            }
+
+            .tour-header img {
+                height: 120px;
+            }
+
+            .tour-text {
+                padding: 15px;
+            }
+
+            .tour-text h2 {
+                font-size: 1.4em;
+            }
+
+            .tour-text p {
+                font-size: 0.85em;
+            }
+
+            .start-modal h2 {
+                font-size: 1.5em;
+            }
+
+            .policy-content {
+                padding: 20px;
+            }
+
+            .policy-content h1 {
+                font-size: 1.5em;
+            }
+
+            .policy-content h2 {
+                font-size: 1.2em;
+            }
+
+            .policy-content p {
+                font-size: 0.85em;
+            }
+
+            footer {
+                padding: 15px;
+                font-size: 0.8em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 2em;
+            }
+
+            .subtitle {
+                font-size: 0.8em;
+            }
+
+            .feature h2 {
+                font-size: 1.3em;
+            }
+
+            .feature p {
+                font-size: 0.8em;
+            }
+
+            .cta-button {
+                padding: 10px 25px;
+                font-size: 0.9em;
+            }
+
+            .tour-header img {
+                height: 100px;
+            }
+
+            .tour-text h2 {
+                font-size: 1.2em;
+            }
+
+            .start-modal h2 {
+                font-size: 1.2em;
+            }
+
+            .policy-content h1 {
+                font-size: 1.3em;
+            }
+
+            .policy-content h2 {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">AG</div>
+        <p class="subtitle">Социальная сеть от XS</p>
+    </header>
+
+    <div class="content">
+        <div class="feature" data-tour="convenience">
+            <h2>Удобство</h2>
+            <p>Интуитивный интерфейс для лёгкого общения.</p>
+        </div>
+        <div class="feature" data-tour="security">
+            <h2>Безопасность</h2>
+            <p>Сквозное шифрование ваших данных.</p>
+        </div>
+        <div class="feature" data-tour="privacy">
+            <h2>Конфиденциальность</h2>
+            <p>Полный контроль над вашим контентом.</p>
+        </div>
+        <div class="feature" data-tour="speed">
+            <h2>Скорость</h2>
+            <p>Быстрая работа даже при слабом интернете.</p>
+        </div>
+    </div>
+
+    <div class="cta-section">
+        <a href="#" class="cta-button" onclick="showStartModal()">Начать</a>
+    </div>
+
+    <footer>
+        <p>© 2025 AG Social. <a onclick="showPolicy()">Политика конфиденциальности</a></p>
+    </footer>
+
+    <!-- Модальное окно для экскурсии -->
+    <div class="tour-modal" id="tourModal">
+        <div class="tour-content">
+            <span class="close-btn" onclick="closeTour()">×</span>
+            <div class="tour-header" id="tourHeader"></div>
+            <div class="tour-text" id="tourText"></div>
+        </div>
+    </div>
+
+    <!-- Полноэкранное окно для "Начать" -->
+    <div class="start-modal" id="startModal">
+        <span class="close-btn" onclick="closeStartModal()">×</span>
+        <h2>Открытие AG Social Network<br>планируется на 2025-2026 года</h2>
+    </div>
+
+    <!-- Модальное окно для политики -->
+    <div class="policy-modal" id="policyModal">
+        <div class="policy-content">
+            <span class="close-btn" onclick="closePolicy()">×</span>
+            <h1>Политика конфиденциальности AG Social</h1>
+            <h2>1. Введение</h2>
+            <p>AG Social, разработанная компанией XS, стремится обеспечить высочайший уровень конфиденциальности и безопасности для своих пользователей. Настоящая политика описывает, как мы собираем, используем и защищаем ваши данные.</p>
+            <h2>2. Сбор данных</h2>
+            <p>Мы собираем только те данные, которые необходимы для предоставления наших услуг:</p>
+            <p>- <strong>Личная информация</strong>: имя, адрес электронной почты (при регистрации).</p>
+            <p>- <strong>Контент</strong>: сообщения, фото и видео, которые вы публикуете (защищены шифрованием).</p>
+            <p>- <strong>Технические данные</strong>: IP-адрес, тип устройства (используются только для оптимизации работы).</p>
+            <h2>3. Использование данных</h2>
+            <p>Ваши данные используются исключительно для:</p>
+            <p>- Обеспечения работы платформы (например, отправки сообщений).</p>
+            <p>- Улучшения пользовательского опыта (анализ скорости загрузки).</p>
+            <p>- Мы <strong>не продаём</strong> ваши данные третьим лицам и не используем их для рекламы.</p>
+            <h2>4. Безопасность</h2>
+            <p>Мы применяем передовые меры защиты:</p>
+            <p>- <strong>Сквозное шифрование</strong>: все сообщения и файлы шифруются на устройстве пользователя.</p>
+            <p>- <strong>Защита от атак</strong>: предотвращение SQL-инъекций, XSS и других угроз через регулярные проверки безопасности.</p>
+            <p>- <strong>Шифрование серверов</strong>: данные хранятся в зашифрованном виде.</p>
+            <h2>5. Конфиденциальность</h2>
+            <p>- Вы полностью контролируете, кто видит ваш контент.</p>
+            <p>- Настройки позволяют скрыть профиль от поиска и ограничить доступ к публикациям.</p>
+            <p>- Мы не используем алгоритмы для анализа ваших интересов в коммерческих целях.</p>
+            <h2>6. Права пользователей</h2>
+            <p>Вы можете:</p>
+            <p>- Запросить копию своих данных.</p>
+            <p>- Удалить свой аккаунт и все связанные данные в любое время.</p>
+            <p>- Обратиться в поддержку для уточнения вопросов конфиденциальности.</p>
+            <h2>7. Изменения в политике</h2>
+            <p>Мы уведомим вас о любых изменениях через платформу. Дата вступления в силу текущей версии: 29 марта 2025 года.</p>
+            <h2>8. Контакты</h2>
+            <p>Если у вас есть вопросы, пишите на: ilyapsuser@gmail.com</p>
+        </div>
+    </div>
+
+    <script>
+        // Анимация при прокрутке
+        const features = document.querySelectorAll('.feature');
+        
+        function checkVisibility() {
+            const triggerBottom = window.innerHeight * 0.8;
+            features.forEach(feature => {
+                const featureTop = feature.getBoundingClientRect().top;
+                if (featureTop < triggerBottom) {
+                    feature.classList.add('visible');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', checkVisibility);
+        window.addEventListener('load', checkVisibility);
+
+        // Данные экскурсии с локальными изображениями
+        const tourData = {
+            convenience: {
+                image: 'convenience.jpg',
+                text: `
+                    <h2>Удобство</h2>
+                    <p>AG Social предлагает интуитивно понятный интерфейс, который делает общение максимально простым. Вы можете легко находить друзей, делиться постами и настраивать платформу под себя.</p>
+                    <p>Настраиваемые темы, быстрый доступ к чатам и удобная навигация — всё это создано для вашего комфорта.</p>
+                `
+            },
+            security: {
+                image: 'security.jpg',
+                text: `
+                    <h2>Безопасность</h2>
+                    <p>Ваши данные под надёжной защитой благодаря сквозному шифрованию. Никто, кроме вас и получателя, не увидит ваши сообщения.</p>
+                    <p>Мы защищаем от SQL-инъекций, XSS-атак и других угроз с помощью современных технологий. Ваши файлы шифруются на уровне сервера, а доступ к ним строго ограничен.</p>
+                `
+            },
+            privacy: {
+                image: 'privacy.jpg',
+                text: `
+                    <h2>Конфиденциальность</h2>
+                    <p>Вы полностью контролируете, кто видит ваш контент. Никаких скрытых алгоритмов или передачи данных третьим лицам.</p>
+                    <p>Настройки приватности позволяют скрыть профиль, ограничить доступ к постам и даже запретить индексацию в поисковиках.</p>
+                `
+            },
+            speed: {
+                image: 'speed.jpg',
+                text: `
+                    <h2>Скорость</h2>
+                    <p>AG Social работает быстро даже при слабом интернете. Оптимизация серверов и сжатие данных обеспечивают мгновенную отправку сообщений.</p>
+                    <p>Фото и видео загружаются без задержек благодаря адаптивной технологии потоковой передачи.</p>
+                `
+            }
+        };
+
+        // Открытие экскурсии
+        features.forEach(feature => {
+            feature.addEventListener('click', () => {
+                const tourType = feature.getAttribute('data-tour');
+                const modal = document.getElementById('tourModal');
+                const tourHeader = document.getElementById('tourHeader');
+                const tourText = document.getElementById('tourText');
+                
+                tourHeader.innerHTML = `<img src="${tourData[tourType].image}" alt="${tourType}">`;
+                tourText.innerHTML = tourData[tourType].text;
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        // Закрытие экскурсии
+        function closeTour() {
+            const modal = document.getElementById('tourModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Закрытие при клике вне окна экскурсии
+        document.getElementById('tourModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('tourModal')) {
+                closeTour();
+            }
+        });
+
+        // Открытие полноэкранного окна
+        function showStartModal() {
+            const startModal = document.getElementById('startModal');
+            startModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Закрытие полноэкранного окна
+        function closeStartModal() {
+            const startModal = document.getElementById('startModal');
+            startModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Закрытие при клике вне текста в полноэкранном окне
+        document.getElementById('startModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('startModal')) {
+                closeStartModal();
+            }
+        });
+
+        // Открытие политики
+        function showPolicy() {
+            const policyModal = document.getElementById('policyModal');
+            policyModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Закрытие политики
+        function closePolicy() {
+            const policyModal = document.getElementById('policyModal');
+            policyModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Закрытие при клике вне окна политики
+        document.getElementById('policyModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('policyModal')) {
+                closePolicy();
+            }
+        });
+    </script>
+</body>
+</html>
+
